@@ -1,0 +1,44 @@
+digraph {
+	ranksep=0.5
+	bgcolor="#eeeeee" # nice grey background, comment out for printing
+	node [style="filled",fillcolor="#ffffff",shape="box",fontname="sans",width="1.2"]
+
+
+	{ # question nodes
+		node [shape="record",style="filled,rounded"]
+
+		start [label="{\N\n\nstart}|{.\nHi! This is a chat system to help you\nwork out how prepared you are for uni.\nYou can talk to me by selecting the\nanswer you want to use. Try it out now\nby picking 'okay' or 'sounds good' from\nthe answers below.\n.}"]
+		q1 [label="{\N\n\nprofile}|{.\nCool! We will get started.\nAre you the first in your family to go to uni?\n.}"]
+		q2 [label="{\N\n\nprepared}|{.\nDoes your course require you to have\ngood numeracy skills?\n.|hint: Numeracy means basic mathematics.\nSome uni courses expect you to have a\ngood understanding of maths.}"]
+		q3 [label="{\N\n\nprepared}|{.\nWould you like help to\nimprove your numeracy?\n.}"]
+		q4 [label="{\N\n\nwrapped}|{.\nThanks for talking with me!\n.}"]
+	}
+
+
+	{ # answer nodes
+		node [shape="box",style="filled"]
+
+		{ rank=same; startans1 [label="okay"]; startans2 [label="sounds good"];  }
+		{ rank=same; q1ans1 [label="yes"]; q1ans2 [label="no"];  }
+		{ rank=same; q2ans1 [label="yes"]; q2ans2 [label="no"]; q2ans3 [label="¯\\_(ツ)_/¯ shrug"];  }
+		{ rank=same; q3ans1 [label="yes"]; q3ans2 [label="no"];  }
+
+	}
+
+
+	{ # answer info boxes
+		node [shape="box",style="filled,rounded"]
+
+		q2ans3info [label="If you find you need help with numeracy\nduring your course, the uni's academic\nsupport office can help you.  Call them\non (01) 2345 6789, or visit their website\nat http://aso.uni.edu.au"] ; 
+		q3ans1info [label="The uni's academic support office can\nhelp with numeracy skills development.\nCall them on (01) 2345 6789, or visit\ntheir website at http://aso.uni.edu.au"] ; 
+	}
+
+	{ rank=same; q3; q2ans3info }
+
+	# connections
+	start -> startans1 startans1 -> q1 start -> startans2 startans2 -> q1  
+	q1 -> q1ans1 q1ans1 -> q2 q1 -> q1ans2 q1ans2 -> q2  
+	q2 -> q2ans1 q2ans1 -> q3 q2 -> q2ans2 q2ans2 -> q4 q2 -> q2ans3 -> q2ans3info -> q4 
+	q3 -> q3ans1 q3ans1 -> q3ans1info -> q4 q3 -> q3ans2 q3ans2 -> q4  
+
+}

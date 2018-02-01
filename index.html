@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <title>
+        Chat Interface Demonstration
+    </title>
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1">
+	<style>
+	html {
+		font-family: sans-serif;
+		background-color: #eee;
+		background-image: radial-gradient(#999, #eee);
+		text-align: center;
+		padding: 0;
+		margin: 0;
+	}
+	body, p {
+		padding: 0;
+		margin: 0;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body > p > a {
+		display: inline-block;
+		font-size: 2vh;
+		line-height: 4vh;
+		height: 4vh;
+		padding: 0 1em;
+		background-color: #fff;
+		border-radius: 1em;
+		margin: 1vh 0;
+	}
+	#form {
+		height: 0;
+		overflow: hidden;
+	}
+	#formholder {
+		max-width: 40rem;
+		margin: 0 auto;
+		height: 94vh;
+	}
+
+
+	@media (min-width: 768px) {
+		.conversational-form cf-chat-response {
+			max-width: 80%;
+		}		
+	}
+	.conversational-form cf-chat-response.robot thumb {
+		zoom: 1.1;
+		background-color: #333;
+		border: 3px solid #333;
+	}
+	.conversational-form cf-chat-response.user thumb {
+		zoom: 1.25;
+		border: 1px solid dodgerblue;
+	}
+
+	.conversational-form cf-chat-response.robot text {
+		font-size: 18px;
+		color: #555;
+	}
+
+	.conversational-form cf-chat-response.user text {
+		font-size: 18px;
+		color: #028;
+	}
+
+	</style>
+</head>
+<body>
+
+<p><a href="./demo.dot.png">Diagram of this interaction</a></p>
+
+<form id="form">
+
+	<fieldset cf-questions="Hi! This is a chat system to help you work out how prepared you are for uni. You can talk to me by selecting the answer you want to use. Try it out now by picking 'okay' or 'sounds good' from the answers below.">
+		<label>okay<input type="radio" name="start" value="start"></label>
+		<label>sounds good<input type="radio" name="start" value="good"></label>
+	</fieldset>
+
+
+	<fieldset cf-questions="Cool! We will get started. Are you the first in your family to go to uni?">
+		<label>yes<input        type="radio" name="first-fam" value="yes"></label>
+		<label>no<input         type="radio" name="first-fam" value="no"></label>
+	</fieldset>
+
+
+	<fieldset cf-questions="Does your course require you to have good numeracy skills?">
+		<label>I don't understand<input type="radio" name="need-num" value="hint"></label>
+		<label>yes<input                type="radio" name="need-num" value="yes"></label>
+		<label>no<input                 type="radio" name="need-num" value="no"></label>
+		<label>¯\_(ツ)_/¯ shrug<input   type="radio" name="need-num" value="shrug"></label>
+	</fieldset>
+
+		<!-- hint flow -->
+		<fieldset cf-questions="Numeracy means basic mathematics. Some uni courses expect you to have a good understanding of maths. Does your course need maths?">
+			<label>yes<input              cf-conditional-need-num="hint" type="radio" name="need-num-h" value="yes"></label>
+			<label>no<input               cf-conditional-need-num="hint" type="radio" name="need-num-h" value="no"></label>
+			<label>¯\_(ツ)_/¯ shrug<input cf-conditional-need-num="hint" type="radio" name="need-num-h" value="shrug"></label>
+		</fieldset>
+
+			<!-- hint yes flow -->
+			<fieldset cf-questions="Would you like help to improve your numeracy?">
+				<label>yes<input cf-conditional-need-num-h="yes" type="radio" name="num-help-h" value="yes"></label>
+				<label>no<input  cf-conditional-need-num-h="yes" type="radio" name="num-help-h" value="no"></label>
+			</fieldset>
+
+			<fieldset cf-questions="The uni's academic support office can help with numeracy skills development.  Call them on (01) 2345 6789, or visit their website at http://aso.uni.edu.au">
+				<label>okay<input cf-conditional-num-help-h="yes" type="radio" name="num-advice1-h" value="okay"></label>
+			</fieldset>
+
+			<!-- hint shrug flow -->
+			<fieldset cf-questions="If you find you need help with numeracy during your course, the uni's academic support office can help you.  Call them on (01) 2345 6789, or visit their website at http://aso.uni.edu.au">
+				<label>okay<input cf-conditional-need-num-h="shrug" type="radio" name="num-advice2-h" value="okay"></label>
+			</fieldset>
+
+
+		<!-- yes flow -->
+		<fieldset cf-questions="Would you like help to improve your numeracy?">
+			<label>yes<input cf-conditional-need-num="yes" type="radio" name="num-help" value="yes"></label>
+			<label>no<input  cf-conditional-need-num="yes" type="radio" name="num-help" value="no"></label>
+		</fieldset>
+
+		<fieldset cf-questions="The uni's academic support office can help with numeracy skills development.  Call them on (01) 2345 6789, or visit their website at http://aso.uni.edu.au">
+			<label>okay<input cf-conditional-num-help="yes" type="radio" name="num-advice1" value="okay"></label>
+		</fieldset>
+
+		<!-- shrug flow -->
+		<fieldset cf-questions="If you find you need help with numeracy during your course, the uni's academic support office can help you.  Call them on (01) 2345 6789, or visit their website at http://aso.uni.edu.au">
+			<label>okay<input cf-conditional-need-num="shrug" type="radio" name="num-advice2" value="okay"></label>
+		</fieldset>
+
+
+	<fieldset cf-questions="Thanks for talking with me!">
+		<label>sure<input type="radio" name="thanks" value="okay"></label>
+	</fieldset>
+
+
+</form>
+
+<div id="formholder" cf-context></div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@0.9.70/dist/conversational-form.min.js" crossorigin></script>
+
+<script type="text/javascript">
+	new cf.ConversationalForm({ 
+		formEl: document.getElementById('form'),
+		context: document.getElementById('formholder'),
+		// userImage: '◉‿◉',
+		userImage: 'ʘ‿ʘ',
+		robotImage: window.location.protocol + '//' + window.location.host + '/info.png'
+	})
+</script>
+
+</body>
+</html>
