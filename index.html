@@ -51,8 +51,8 @@
 	}
 	.conversational-form cf-chat-response.robot thumb {
 		zoom: 1.1;
-		background-color: #333;
-		border: 3px solid #333;
+		background-color: #1a4;
+		border: 3px solid #1a4;
 	}
 	.conversational-form cf-chat-response.user thumb {
 		zoom: 1.25;
@@ -154,6 +154,10 @@
 		userImage: 'ʘ‿ʘ',
 		robotImage: window.location.protocol + '//' + window.location.host + '/info.png'
 	})
+	setInterval(function() {
+		var t = document.querySelector('[placeholder^="Type to"]')
+		if (t) { t.setAttribute('placeholder', 'select answer above, or type answer here')}
+	}, 100)
 </script>
 
 </body>
