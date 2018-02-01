@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <title>
+        Chat Interface Demonstration
+    </title>
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1">
+	<style>
+	html {
+		font-family: sans-serif;
+		background-color: #eee;
+		background-image: radial-gradient(#999, #eee);
+		text-align: center;
+		padding: 0;
+		margin: 0;
+	}
+	body, p {
+		padding: 0;
+		margin: 0;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body > p > a {
+		display: inline-block;
+		font-size: 2vh;
+		line-height: 4vh;
+		height: 4vh;
+		padding: 0 1em;
+		background-color: #fff;
+		border-radius: 1em;
+		margin: 1vh 0;
+	}
+	#form {
+		height: 0;
+		overflow: hidden;
+	}
+	#formholder {
+		max-width: 40rem;
+		margin: 0 auto;
+		height: 94vh;
+	}
+
+
+	@media (min-width: 768px) {
+		.conversational-form cf-chat-response {
+			max-width: 80%;
+		}		
+	}
+	.conversational-form cf-chat-response.robot thumb {
+		zoom: 1.1;
+		background-color: #1a4;
+		border: 3px solid #1a4;
+	}
+	.conversational-form cf-chat-response.user thumb {
+		zoom: 1.25;
+		border: 1px solid dodgerblue;
+	}
+
+	.conversational-form cf-chat-response.robot text {
+		font-size: 18px;
+		color: #555;
+	}
+
+	.conversational-form cf-chat-response.user text {
+		font-size: 18px;
+		color: #028;
+	}
+
+	</style>
+</head>
+<body>
+
+
+
+<div id="formholder" cf-context></div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@0.9.70/dist/conversational-form.min.js" crossorigin></script>
+
+<script type="text/javascript">
+
+/*
+	new cf.ConversationalForm({ 
+		formEl: document.getElementById('form'),
+		context: document.getElementById('formholder'),
+		// userImage: '◉‿◉',
+		userImage: 'ʘ‿ʘ',
+		robotImage: window.location.protocol + '//' + window.location.host + '/info.png'
+	})
+	setInterval(function() {
+		var t = document.querySelector('[placeholder^="Type to"]')
+		if (t) { t.setAttribute('placeholder', 'select answer above, or type answer here')}
+	}, 100)
+*/
+
+/*
+	<fieldset cf-questions="Hi! This is a chat system to help you work out how prepared you are for uni. You can talk to me by selecting the answer you want to use. Try it out now by picking 'okay' or 'sounds good' from the answers below.">
+		<label>okay<input type="radio" name="start" value="start"></label>
+		<label>sounds good<input type="radio" name="start" value="good"></label>
+	</fieldset>
+*/
+
+	var dispatcher = new cf.EventDispatcher();
+
+	dispatcher.addEventListener(cf.UserInputEvents.SUBMIT, function(event){
+		console.log(event)
+	}, false);
+
+	json = {
+		"options": {
+			eventDispatcher: dispatcher
+		},
+		"tags": [{
+			tag: "input",
+			type: "text",
+			value: "prefilled value",
+			"cf-label": "Please insert text"
+		}]
+	}
+
+	moretags = [{
+			tag: "input",
+			type: "text",
+			value: "asdfasdfasdf",
+			"cf-label": "asdfasdfasdf"
+		}]
+
+	var myform = window.cf.ConversationalForm.startTheConversation(json)
+
+	// myform.addTags(moretags, true)
+
+
+</script>
+
+</body>
+</html>
