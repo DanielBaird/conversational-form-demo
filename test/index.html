@@ -11,7 +11,8 @@
 	html {
 		font-family: sans-serif;
 		background-color: #eee;
-		background-image: radial-gradient(#999, #eee);
+		background-image: linear-gradient(-15deg, #a13, #719, #11a);
+		background-image: linear-gradient(-15deg, #c70, #600);
 		text-align: center;
 		padding: 0;
 		margin: 0;
@@ -39,8 +40,8 @@
 	}
 	#formholder {
 		max-width: 40rem;
-		margin: 0 auto;
-		height: 94vh;
+		margin: 5vh auto 0;
+		height: 95vh;
 	}
 
 
@@ -74,62 +75,152 @@
 <body>
 
 
-
 <div id="formholder" cf-context></div>
+
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@0.9.70/dist/conversational-form.min.js" crossorigin></script>
 
 <script type="text/javascript">
 
-/*
-	new cf.ConversationalForm({ 
-		formEl: document.getElementById('form'),
-		context: document.getElementById('formholder'),
-		// userImage: '◉‿◉',
-		userImage: 'ʘ‿ʘ',
-		robotImage: window.location.protocol + '//' + window.location.host + '/info.png'
-	})
-	setInterval(function() {
-		var t = document.querySelector('[placeholder^="Type to"]')
-		if (t) { t.setAttribute('placeholder', 'select answer above, or type answer here')}
-	}, 100)
-*/
-
-/*
-	<fieldset cf-questions="Hi! This is a chat system to help you work out how prepared you are for uni. You can talk to me by selecting the answer you want to use. Try it out now by picking 'okay' or 'sounds good' from the answers below.">
-		<label>okay<input type="radio" name="start" value="start"></label>
-		<label>sounds good<input type="radio" name="start" value="good"></label>
-	</fieldset>
-*/
-
-	var dispatcher = new cf.EventDispatcher();
-
-	dispatcher.addEventListener(cf.UserInputEvents.SUBMIT, function(event){
-		console.log(event)
-	}, false);
-
 	json = {
 		"options": {
-			eventDispatcher: dispatcher
+			// eventDispatcher: dispatcher,
+			context: document.getElementById('formholder'),
+			flowStepCallback: answerSubmitted
 		},
+		// "tags": []
 		"tags": [{
-			tag: "input",
-			type: "text",
-			value: "prefilled value",
-			"cf-label": "Please insert text"
+			"id": "q1",
+			"tag": "fieldset",
+			"type": "Radio",
+			"cf-questions": "Ready?",
+			"children": [{
+				"tag": "input",
+				"type": "radio",
+				"name": "q1",
+				"value": "okay",
+				"cf-label": "Okay let's do it!"
+			}]
 		}]
+
 	}
 
-	moretags = [{
-			tag: "input",
-			type: "text",
-			value: "asdfasdfasdf",
-			"cf-label": "asdfasdfasdf"
-		}]
+	questions = {
+		'qq1': {
+			text: 'This is the text section of question 1',
+			hint: 'This is the hint text for question 1, explaining terms etc',
+			next: 'qq2',
+			answers: []
+		},
+		'qq2': {
+			text: 'Whats more awesome, ninjas or pirates?',
+			hint: 'This 2 is 2 the 2 hint text for question 2, explaining terms etc',
+			next: null,
+			answers: [{
+				id: 'qq2-ninjas',
+				label: 'Ninjas, obviously',
+				info: 'Ever wonder if maybe every country has ninjas, and Japan just has the worst ninjas?',
+				next: 'qq4'
+			},{
+				id: 'qq2-pirates',
+				label: 'Pirates, matey',
+				next: 'qq5'
+			}]
+		},
+		'qq4': {
+			text: 'Wanna get keel hauled, or do you wanna change your vote?',
+			hint: null,
+			next: null,
+			answers: [{
+				id: 'qq2-okay',
+				label: 'I admit, pirates are cooler',
+				info: null,
+				next: 'qq5'
+			},{
+				id: 'qq2-keelhauled',
+				label: 'I deserve to be keelhauled for my opinion',
+				info: null,
+				next: 'qq5'
+			}]
+		},
+		'qq5': {
+			text: 'Good decision!',
+			hint: null,
+			answers: [],
+			next: null
+		}
+	}
 
 	var myform = window.cf.ConversationalForm.startTheConversation(json)
 
-	// myform.addTags(moretags, true)
+	var nextQnId = 'qq1';
+	var currQnId = null;
+	// ----------------------------------------------------
+	function makeTagFor(id, qn) {
+		var tag = {
+			id: id,
+			tag: 'fieldset',
+			type: 'Radio',
+			'cf-input-placeholder': 'Select answer above or type here',
+			'cf-questions': qn.text
+		}
+		if (qn.answers.length > 0) {
+			tag['children'] = []
+			qn.answers.forEach(function(ans) {
+				tag['children'].push({
+					tag: 'input',
+					type: 'radio',
+					name: id,
+					value: ans.id,
+					'cf-label': ans.label
+				})
+			}.bind(this))
+		} else {
+			tag['children'] = [{
+				tag: 'input',
+				type: 'radio',
+				name: id,
+				value: 'okay',
+				'cf-label': 'okay'
+			}]
+		}
+		return tag;
+	}
+	// ----------------------------------------------------
+	function getFollowUp(qnId, ansId) {
+		var qn = questions[qnId]
+		if (qn.answers.length > 0) {
+			for (var i = 0; i < qn.answers.length; i++) {
+				if (qn.answers[i].id == ansId) { return qn.answers[i].next }
+			}
+		} else {
+			return qn.next
+		}
+	}
+	// ----------------------------------------------------
+	function answerSubmitted(event, successCallback, errorCallback) {
+		console.log('An answer was selected for ' + event.tag.id + ': ' + event.tag.value)
+
+		var qnId = event.tag.id
+		var ansId = event.tag.value
+
+		if (currQnId) {
+			nextQnId = getFollowUp(qnId, ansId)
+			console.log("next up: ", nextQnId)
+		}
+
+		var nextQn = questions[nextQnId]
+		var tag = makeTagFor(nextQnId, nextQn)
+
+		currQnId = nextQnId
+
+		myform.addTags([tag], true)
+
+		successCallback()
+	}
+	// ----------------------------------------------------
+
+	console.log(myform.formEl)
 
 
 </script>
