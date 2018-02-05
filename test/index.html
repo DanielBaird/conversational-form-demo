@@ -13,7 +13,6 @@
 		background-color: #eee;
 		background-image: linear-gradient(-15deg, #a13, #719, #11a);
 		background-image: linear-gradient(-15deg, #c70, #600);
-		text-align: center;
 		padding: 0;
 		margin: 0;
 	}
@@ -70,6 +69,14 @@
 		color: #028;
 	}
 
+	.conversational-form cf-input-control-elements {
+		text-align: center;
+	}
+
+	.conversational-form cf-input textarea {
+		font-size: 18px;
+	}
+
 	</style>
 </head>
 <body>
@@ -86,7 +93,15 @@
 		"options": {
 			// eventDispatcher: dispatcher,
 			context: document.getElementById('formholder'),
-			flowStepCallback: answerSubmitted
+			flowStepCallback: answerSubmitted,
+			submitCallback: handleSubmit,
+			hideUserInputOnNoneTextInput: true,
+			userInterfaceOptions: {
+				robot: {
+					robotResponseTime: -2000,
+					chainedResponseTime: 2200
+				}
+			}
 		},
 		// "tags": []
 		"tags": [{
@@ -107,29 +122,30 @@
 
 	questions = {
 		'qq1': {
-			text: 'This is the text section of question 1',
-			hint: 'This is the hint text for question 1, explaining terms etc',
+			text: 'What\'s your name?',
+			capture: 'text',
 			next: 'qq2',
 			answers: []
 		},
 		'qq2': {
-			text: 'Whats more awesome, ninjas or pirates?',
-			hint: 'This 2 is 2 the 2 hint text for question 2, explaining terms etc',
+			text: 'Well {qq1}, what\'s more awesome, ninjas or pirates?||Here\'s a question {qq1}. What\'s cooler, ninjas or pirates?',
+			capture: null,
 			next: null,
 			answers: [{
 				id: 'qq2-ninjas',
 				label: 'Ninjas, obviously',
-				info: 'Ever wonder if maybe every country has ninjas, and Japan just has the worst ninjas?',
+				info: 'Maybe every country has ninjas, and Japan just has the worst ninjas.&&Pretty sure that means the ninjas you\'re thinking of are the worst ninjas.',
 				next: 'qq4'
 			},{
 				id: 'qq2-pirates',
 				label: 'Pirates, matey',
+				info: null,
 				next: 'qq5'
 			}]
 		},
 		'qq4': {
 			text: 'Wanna get keel hauled, or do you wanna change your vote?',
-			hint: null,
+			capture: null,
 			next: null,
 			answers: [{
 				id: 'qq2-okay',
@@ -145,8 +161,8 @@
 		},
 		'qq5': {
 			text: 'Good decision!',
-			hint: null,
 			answers: [],
+			capture: null,
 			next: null
 		}
 	}
@@ -156,34 +172,56 @@
 	var nextQnId = 'qq1';
 	var currQnId = null;
 	// ----------------------------------------------------
-	function makeTagFor(id, qn) {
+	function makeTagFor(id, qn, prelim) {
+
 		var tag = {
 			id: id,
-			tag: 'fieldset',
-			type: 'Radio',
-			'cf-input-placeholder': 'Select answer above or type here',
+			children: [],
 			'cf-questions': qn.text
 		}
-		if (qn.answers.length > 0) {
-			tag['children'] = []
-			qn.answers.forEach(function(ans) {
-				tag['children'].push({
+
+		// if there was any preliminary info, show it too
+		if (prelim  && prelim !== null) {
+			tag['cf-questions'] = prelim + '&&' + tag['cf-questions']
+		}
+
+
+		if (qn.capture && qn.capture === 'text') {
+			// a capturing question wants to capture some text
+			console.log(id + ' - capture ' + qn.capture)
+
+			tag['tag'] = 'input'
+			tag['type'] = 'text'
+			tag['cf-label'] = 'asdf'
+			tag['cf-input-placeholder'] = 'Type your answer here'
+
+		} else {
+			// if it's not a capturing qn, assume it's multichoice
+
+			tag['tag'] = 'fieldset'
+			tag['type'] = 'Radio'
+
+			if (qn.answers.length > 0) {
+				qn.answers.forEach(function(ans) {
+					tag['children'].push({
+						tag: 'input',
+						type: 'radio',
+						name: id,
+						value: ans.id,
+						'cf-label': ans.label
+					})
+				}.bind(this))
+			} else {
+				tag['children'] = [{
 					tag: 'input',
 					type: 'radio',
 					name: id,
-					value: ans.id,
-					'cf-label': ans.label
-				})
-			}.bind(this))
-		} else {
-			tag['children'] = [{
-				tag: 'input',
-				type: 'radio',
-				name: id,
-				value: 'okay',
-				'cf-label': 'okay'
-			}]
+					value: 'okay',
+					'cf-label': 'okay'
+				}]
+			}
 		}
+
 		return tag;
 	}
 	// ----------------------------------------------------
@@ -193,28 +231,54 @@
 			for (var i = 0; i < qn.answers.length; i++) {
 				if (qn.answers[i].id == ansId) { return qn.answers[i].next }
 			}
-		} else {
-			return qn.next
 		}
+		return qn.next
+	}
+	// ----------------------------------------------------
+	function getInfo(qnId, ansId) {
+		var qn = questions[qnId]
+		if (qn.answers.length > 0) {
+			for (var i = 0; i < qn.answers.length; i++) {
+				if (qn.answers[i].id == ansId) { return qn.answers[i].info }
+			}
+		}
+		return null
+	}
+	// ----------------------------------------------------
+	function handleSubmit() {
+		console.log('form submit..')
+	}
+	// ----------------------------------------------------
+	function askQuestion(qnId, prelimContent) {
+		var qn = questions[qnId]
+		var tag = makeTagFor(qnId, qn, prelimContent)
+		myform.addTags([tag], true)
 	}
 	// ----------------------------------------------------
 	function answerSubmitted(event, successCallback, errorCallback) {
-		console.log('An answer was selected for ' + event.tag.id + ': ' + event.tag.value)
+
+		console.log('An answer was selected for ' + event.tag.id + ': ' + event.tag.value, event)
+
 
 		var qnId = event.tag.id
 		var ansId = event.tag.value
+
 
 		if (currQnId) {
 			nextQnId = getFollowUp(qnId, ansId)
 			console.log("next up: ", nextQnId)
 		}
 
-		var nextQn = questions[nextQnId]
-		var tag = makeTagFor(nextQnId, nextQn)
+		var info = null
+
+		if (currQnId) {
+			// check for info for the selected answer
+			info = getInfo(qnId, ansId)
+		}
 
 		currQnId = nextQnId
 
-		myform.addTags([tag], true)
+		askQuestion(currQnId, info)
 
 		successCallback()
 	}
