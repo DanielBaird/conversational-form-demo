@@ -144,7 +144,7 @@
 			}]
 		},
 		'qq4': {
-			text: 'Wanna get keel hauled, or do you wanna change your vote?',
+			text: 'So... want to get keel hauled, or do you wanna change your vote?',
 			capture: null,
 			next: null,
 			answers: [{
@@ -160,7 +160,13 @@
 			}]
 		},
 		'qq5': {
-			text: 'Good decision!',
+			text: 'Good decision {qq1}!',
+			answers: [],
+			capture: null,
+			next: 'qq6'
+		},
+		'qq6': {
+			text: '(that\'s the end, reload to go again)',
 			answers: [],
 			capture: null,
 			next: null
