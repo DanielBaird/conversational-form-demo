@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <title>
+        Chat Interface Demonstration
+    </title>
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1">
+	<style>
+	html {
+		font-family: sans-serif;
+		background-color: #eee;
+		background-image: linear-gradient(-15deg, #a13, #719, #11a);
+		background-image: linear-gradient(-15deg, #c70, #600);
+		padding: 0;
+		margin: 0;
+	}
+	body, p {
+		padding: 0;
+		margin: 0;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body > p > a {
+		display: inline-block;
+		font-size: 2vh;
+		line-height: 4vh;
+		height: 4vh;
+		padding: 0 1em;
+		background-color: #fff;
+		border-radius: 1em;
+		margin: 1vh 0;
+	}
+	#form {
+		height: 0;
+		overflow: hidden;
+	}
+	#formholder {
+		max-width: 40rem;
+		margin: 5vh auto 0;
+		height: 95vh;
+	}
+
+
+	@media (min-width: 768px) {
+		.conversational-form cf-chat-response {
+			max-width: 80%;
+		}		
+	}
+	.conversational-form cf-chat-response.robot thumb {
+		zoom: 1.1;
+		background-color: #1a4;
+		border: 3px solid #1a4;
+	}
+	.conversational-form cf-chat-response.user thumb {
+		zoom: 1.25;
+		border: 1px solid dodgerblue;
+	}
+
+	.conversational-form cf-chat-response.robot text {
+		font-size: 18px;
+		color: #555;
+	}
+
+	.conversational-form cf-chat-response.user text {
+		font-size: 18px;
+		color: #028;
+	}
+
+	.conversational-form cf-input-control-elements {
+		text-align: center;
+	}
+
+	.conversational-form cf-input textarea {
+		font-size: 18px;
+	}
+
+	</style>
+</head>
+<body>
+
+<div id="formholder" cf-context></div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@0.9.70/dist/conversational-form.min.js" crossorigin></script>
+<script type="text/javascript">
+
+	json = {
+		"options": {
+			// eventDispatcher: dispatcher,
+			context: document.getElementById('formholder'),
+			flowStepCallback: answerSubmitted,
+			submitCallback: handleSubmit,
+			hideUserInputOnNoneTextInput: true,
+			userImage: 'ʘ‿ʘ',
+			robotImage: window.location.protocol + '//' + window.location.host + '/info.png',
+			userInterfaceOptions: {
+				robot: {
+					robotResponseTime: -1500,
+					chainedResponseTime: 2000
+				}
+			}
+		},
+		"tags": [{
+			"id": "start",
+			"tag": "fieldset",
+			"type": "Radio",
+			"cf-questions": "This is a technical demonstration of the 5P questionnaire delivery system.",
+			"children": [{
+				"tag": "input",
+				"type": "radio",
+				"name": "start",
+				"value": "start",
+				"cf-label": "Start demo"
+			}]
+		}]
+
+	}
+
+	questions = {
+		'lb-intro': {
+			text: 'Sometimes students who commence the program tell use they find it difficult to achieve a study/work/family/life balance.&&This may include balancing full time study with full or part-time paid work as well as with caring responsibilities.&&Is study/life balance a concern for you? Let\'s work through some examples.',
+			capture: null,
+			next: 'lb-studyload',
+			answers: []
+		},
+		'lb-studyload': {
+			text: 'How many subjects are you enrolled in this semester?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'lb-studyload-1_or_2',
+				label: '1 or 2',
+				info: null,
+				next: 'lb-studyarea'
+			},{
+				id: 'lb-studyload-3_or_more',
+				label: '3 or more',
+				info: '3 subjects or more is a full time load. A full-time study load is approximately 10 to 12 hours work per subject, per week. If you are working more than 20 hours per week, we recommend a part time study load.',
+				next: 'lb-studyarea'
+			}]
+		},
+		'lb-studyarea': {
+			text: 'Do you have a designated study area?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'lb-studyarea-I_do',
+				label: 'I do',
+				info: 'Well done, study requires intense concentration so having a dedicated space to do this is really wonderful. There are also excellent facilities on campus that you are welcome to use.',
+				next: 'lb-finances'
+			},{
+				id: 'lb-studyarea-not_yet',
+				label: 'Not yet',
+				info: 'Study requires intense concentration so having a dedicated space to do this is really important. There are excellent facilities on campus that you are welcome to use.',
+				next: 'lb-finances'
+			}]
+		},
+		'lb-finances': {
+			text: 'Are finances a concern for you?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'lb-finances-yes',
+				label: 'Yes',
+				info: 'Lots of students worry about finances during their studies. There are some options like scholarship, student loans or you may be eligible for Centrelink. You can email the Pathways support officer at <a target="_blank" href="mailto:pathways@jcu.edu.au">pathways@jcu.edu.au</a> for further information.',
+				next: 'p-placements1'
+			},{
+				id: 'lb-finances-no',
+				label: 'No',
+				info: null,
+				next: 'p-placements1'
+			}]
+		},
+		'p-placements1': {
+			text: 'Does your course have Residential Schools, Placements, or Practicums?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'p-placements1-yes',
+				label: 'Yes',
+				info: 'These are a wonderful experiences of work integrated learning. Make sure you familiarise yourself with dates of placements so that you can plan ahead.',
+				next: 'p-placements2'
+			},{
+				id: 'p-placements1-no',
+				label: 'No',
+				info: null,
+				next: 'pdf'
+			},{
+				id: 'p-placements1-not-sure',
+				label: 'Not sure',
+				info: 'Go to your Moodle page and each unit/subject should have your details listed. If they are not indicated it could mean that they are not part of this unit/subject; you could check this with your unit/subject coordinator.',
+				next: 'p-placements3'
+			}]
+		},
+		'p-placements2': {
+			text: 'Do you know where to find out about them?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'p-placements2-yes',
+				label: 'Yes',
+				info: null,
+				next: 'p-placements3'
+			},{
+				id: 'p-placements2-no',
+				label: 'No',
+				info: 'Go to your Moodle page and each unit/subject should have your details listed. If they are not indicated it could mean that they are not part of this unit/subject you could check this with your unit/subject coordinator.',
+				next: 'p-placements3'
+			}]
+		},
+		'p-placements3': {
+			text: 'Have you considered that you may need to travel for a residential school or to do a placement/practicum?',
+			capture: null,
+			next: '',
+			answers: [{
+				id: 'p-placements3-yes',
+				label: 'Yes',
+				info: 'Don\'t forget to budget for travel, accomodation and other expenses.',
+				next: 'pdf'
+			},{
+				id: 'p-placements3-no',
+				label: 'No',
+				info: 'For many students this requires them to take time off work so start organising this as soon as possible. Don\'t forget to budget for travel, accommodation and other expenses.',
+				next: 'pdf'
+			}]
+		},
+		'pdf': {
+			text: 'That\'s the end of this questionnaire!&&You can <a target="_blank" href="./StudentServicesContactSheet-dummy.pdf">download a PDF document</a> summarising some of the information we\'ve covered.',
+			capture: null,
+			next: 'end',
+			answers: []
+		},
+		'end': {
+			text: 'Demonstration complete. Reload this page to start over.',
+			capture: null,
+			next: null,
+			answers: []
+		}
+	}
+	// ----------------------------------------------------
+
+	var myform = window.cf.ConversationalForm.startTheConversation(json)
+	var nextQnId = 'lb-intro';
+	var currQnId = null;
+
+	// ----------------------------------------------------
+	function makeTagFor(id, qn) {
+
+		var tag = {
+			id: id,
+			children: [],
+			'cf-questions': qn.text
+		}
+
+		if (qn.capture && qn.capture === 'text') {
+			// a capturing question wants to capture some text
+			console.log(id + ' - capture ' + qn.capture)
+
+			tag['tag'] = 'input'
+			tag['type'] = 'text'
+			tag['cf-label'] = 'asdf'
+			tag['cf-input-placeholder'] = 'Type your answer here'
+
+		} else {
+			// if it's not a capturing qn, assume it's multichoice
+
+			tag['tag'] = 'fieldset'
+			tag['type'] = 'Radio'
+
+			if (qn.answers.length > 0) {
+				qn.answers.forEach(function(ans) {
+					tag['children'].push({
+						tag: 'input',
+						type: 'radio',
+						name: id,
+						value: ans.id,
+						'cf-label': ans.label
+					})
+				}.bind(this))
+			} else {
+				tag['children'] = [{
+					tag: 'input',
+					type: 'radio',
+					name: id,
+					value: 'okay',
+					'cf-label': 'okay'
+				}]
+			}
+		}
+
+		return tag;
+	}
+	// ----------------------------------------------------
+	function getFollowUp(qnId, ansId) {
+		var qn = questions[qnId]
+		if (qn.answers.length > 0) {
+			for (var i = 0; i < qn.answers.length; i++) {
+				if (qn.answers[i].id == ansId) { return qn.answers[i].next }
+			}
+		}
+		return qn.next
+	}
+	// ----------------------------------------------------
+	function getInfo(qnId, ansId) {
+		var qn = questions[qnId]
+		if (qn.answers.length > 0) {
+			for (var i = 0; i < qn.answers.length; i++) {
+				if (qn.answers[i].id == ansId) { return qn.answers[i].info }
+			}
+		}
+		return null
+	}
+	// ----------------------------------------------------
+	function handleSubmit() {
+		console.log('form submit..')
+	}
+	// ----------------------------------------------------
+	function askQuestion(qnId) {
+		var tag = makeTagFor(qnId, questions[qnId])
+		myform.addTags([tag], true)
+	}
+	// ----------------------------------------------------
+	function presentInfo(qnId, ansId) {
+
+		var info = getInfo(qnId, ansId)
+
+		if (info) {
+			// fake up a question tag
+			var fakeId = 'info-presentation--' + qnId + '--' + ansId
+			var fakeQn = {
+				text: getInfo(qnId, ansId),
+				capture: null,
+				next: getFollowUp(qnId, ansId),
+				answers: []
+			}
+
+			questions[fakeId] = fakeQn
+			var tag = makeTagFor(fakeId, fakeQn)
+			myform.addTags([tag], true)
+			return true
+		} else {
+			return false
+		}
+	}
+	// ----------------------------------------------------
+	function answerSubmitted(event, successCallback, errorCallback) {
+
+		console.log('An answer was selected for ' + event.tag.id + ': ' + event.tag.value, event)
+
+
+		var qnId = event.tag.id
+		var ansId = event.tag.value
+
+
+		if (currQnId) {
+			nextQnId = getFollowUp(qnId, ansId)
+			console.log("next up: ", nextQnId)
+		}
+
+		var info = null
+
+		if (currQnId && presentInfo(qnId, ansId)) {
+			// then we're showing the answer info,
+			// nothing to do.
+		} else {
+			// otherwise, on to the next question!
+			currQnId = nextQnId
+			askQuestion(currQnId)
+		}
+
+		successCallback()
+	}
+	// ----------------------------------------------------
+
+	console.log(myform.formEl)
+
+
+</script>
+
+</body>
+</html>

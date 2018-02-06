@@ -105,16 +105,16 @@
 		},
 		// "tags": []
 		"tags": [{
-			"id": "q1",
+			"id": "start",
 			"tag": "fieldset",
 			"type": "Radio",
-			"cf-questions": "Ready?",
+			"cf-questions": "This is a technical demonstration of the 5P questionnaire delivery system.",
 			"children": [{
 				"tag": "input",
 				"type": "radio",
-				"name": "q1",
-				"value": "okay",
-				"cf-label": "Okay let's do it!"
+				"name": "start",
+				"value": "start",
+				"cf-label": "Start demo"
 			}]
 		}]
 
@@ -122,7 +122,7 @@
 
 	questions = {
 		'qq1': {
-			text: 'What\'s your name?',
+			text: 'Welcome to <a target="_blank" href="http://jcu.edu.au">JCU</a>, What\'s your name?',
 			capture: 'text',
 			next: 'qq2',
 			answers: []
