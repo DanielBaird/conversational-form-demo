@@ -1,0 +1,101 @@
+digraph {
+	ranksep=0.5
+	bgcolor="#eeeeee" # nice grey background, comment out for printing
+	node [style="filled",fillcolor="#ffffff",shape="box",fontname="sans",width="1.2"]
+
+
+	{ # question nodes
+		node [shape="record",style="filled,rounded"]
+
+		"lb-intro"      [label="{\N}|{.\nSometimes students who commence the program tell use\nthey find it difficult to achieve a study/work/family/life balance.\n&&\nThis may include balancing full time study with full\nor part-time paid work as well as with caring responsibilities.\n&&\nIs study/life balance a concern for you? Let\'s work\nthrough some examples.\n.}"]
+		"lb-studyload"  [label="{\N}|{.\nHow many subjects are you enrolled in this semester?\n.}"]
+		"lb-studyarea"  [label="{\N}|{.\nDo you have a designated study area?\n.}"]
+		"lb-finances"   [label="{\N}|{.\nAre finances a concern for you?\n.}"]
+		"p-placements1" [label="{\N}|{.\nDoes your course have Residential Schools, Placements,\nor Practicums?\n.}"]
+		"p-placements2" [label="{\N}|{.\nDo you know where to find out about them?\n.}"]
+		"p-placements3" [label="{\N}|{.\nHave you considered that you may need to travel for a\nresidential school or to do a placement/practicum?\n.}"]
+		"pdf"           [label="{\N}|{.\nThat's the end of this questionnaire!\n&&\nYou can [download a PDF document]\n(./StudentServicesContactSheet-dummy.pdf) summarising\nsome of the information we've covered.\n.}"]
+
+	}
+
+
+	{ # answer nodes
+		node [shape="box",style="filled"]
+
+		{ rank=same; "lb-studyload-1_or_2" [label="1 or 2"]; "lb-studyload-3_or_more" [label="3 or more"]; }
+		{ rank=same; "lb-studyarea-I_do" [label="I do"]; "lb-studyarea-not_yet" [label="Not yet"]; }
+		{ rank=same; "lb-finances-yes" [label="Yes"]; "lb-finances-no" [label="No"]; }
+		{ rank=same; "p-placements1-yes" [label="Yes"]; "p-placements1-no" [label="No"]; "p-placements1-not-sure" [label="Not sure"]; }
+		{ rank=same; "p-placements2-yes" [label="Yes"]; "p-placements2-no" [label="No"]; }
+		{ rank=same; "p-placements3-yes" [label="Yes"]; "p-placements3-no" [label="No"]; }
+
+	}
+
+
+	{ # answer info boxes
+		node [shape="box",style="filled,rounded"]
+
+		"lb-studyload-3_or_more-info" [label="3 subjects or more is a full time load. A full-time\nstudy load is approximately 10 to 12 hours work per\nsubject, per week. If you are working more than\n20 hours per week, we recommend a part time study load."];
+		"lb-studyarea-I_do-info"      [label="Well done, study requires intense concentration so\nhaving a dedicated space to do this is really wonderful.\nThere are also excellent facilities on campus\nthat you are welcome to use."];
+		"lb-studyarea-not_yet-info"   [label="Study requires intense concentration so having a\ndedicated space to do this is really important. There\nare excellent facilities on campus that you are\nwelcome to use."];
+		"lb-finances-yes-info"        [label="Lots of students worry about finances during their\nstudies. There are some options like scholarship,\nstudent loans or you may be eligible for Centrelink.\nYou can email the Pathways support officer at\n[pathways@jcu.edu.au](mailto:pathways@jcu.edu.au)\nfor further information."];
+		"p-placements1-yes-info"      [label="These are a wonderful experiences of work integrated\nlearning. Make sure you familiarise yourself with\ndates of placements so that you can plan ahead."];
+		"p-placements1-not-sure-info" [label="Go to your Moodle page and each unit/subject should\nhave your details listed. If they are not indicated\nit could mean that they are not part of this\nunit/subject; you could check this with your\nunit/subject coordinator."];
+		"p-placements2-no-info"       [label="Go to your Moodle page and each unit/subject should\nhave your details listed. If they are not indicated\nit could mean that they are not part of this\nunit/subject you could check this with your\nunit/subject coordinator."];
+		"p-placements3-yes-info"      [label="Don\'t forget to budget for travel, accomodation and\nother expenses."];
+		"p-placements3-no-info"       [label="For many students this requires them to take time off\nwork so start organising this as soon as possible.\nDon\'t forget to budget for travel, accommodation\nand other expenses."];
+
+	}
+
+
+	# connections
+
+	"lb-intro" -> "lb-studyload"
+
+	"lb-studyload-1_or_2" -> "lb-studyarea"
+	"lb-studyload-3_or_more-info" -> "lb-studyarea"
+	"lb-studyarea-I_do-info" -> "lb-finances"
+	"lb-studyarea-not_yet-info" -> "lb-finances"
+	"lb-finances-yes-info" -> "p-placements1"
+	"lb-finances-no" -> "p-placements1"
+	"p-placements1-yes-info" -> "p-placements2"
+	"p-placements1-no" -> "pdf"
+	"p-placements1-not-sure-info" -> "p-placements3"
+	"p-placements2-yes" -> "p-placements3"
+	"p-placements2-no-info" -> "p-placements3"
+	"p-placements3-yes-info" -> "pdf"
+	"p-placements3-no-info" -> "pdf"
+
+	"lb-studyload" -> { "lb-studyload-1_or_2" "lb-studyload-3_or_more" }
+	"lb-studyarea" -> { "lb-studyarea-I_do" "lb-studyarea-not_yet" }
+	"lb-finances" -> { "lb-finances-yes" "lb-finances-no" }
+	"p-placements1" -> { "p-placements1-yes" "p-placements1-no" "p-placements1-not-sure" }
+	"p-placements2" -> { "p-placements2-yes" "p-placements2-no" }
+	"p-placements3" -> { "p-placements3-yes" "p-placements3-no" }
+
+
+	"lb-studyload-3_or_more" -> "lb-studyload-3_or_more-info"
+	"lb-studyarea-I_do" -> "lb-studyarea-I_do-info"
+	"lb-studyarea-not_yet" -> "lb-studyarea-not_yet-info"
+	"lb-finances-yes" -> "lb-finances-yes-info"
+	"p-placements1-yes" -> "p-placements1-yes-info"
+	"p-placements1-not-sure" -> "p-placements1-not-sure-info"
+	"p-placements2-no" -> "p-placements2-no-info"
+	"p-placements3-yes" -> "p-placements3-yes-info"
+	"p-placements3-no" -> "p-placements3-no-info"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
