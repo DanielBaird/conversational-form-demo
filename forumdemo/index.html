@@ -17,6 +17,7 @@
 		margin: 0;
 	}
 	body, p {
+		text-align: center;
 		padding: 0;
 		margin: 0;
 	}
@@ -39,8 +40,8 @@
 	}
 	#formholder {
 		max-width: 40rem;
-		margin: 5vh auto 0;
-		height: 95vh;
+		margin: 0 auto;
+		height: 94vh;
 	}
 
 
@@ -81,6 +82,8 @@
 </head>
 <body>
 
+<p><a href="./forumdemo.dot.png">Diagram of this interaction</a></p>
+
 <div id="formholder" cf-context></div>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@0.9.70/dist/conversational-form.min.js" crossorigin></script>
@@ -120,7 +123,7 @@
 
 	questions = {
 		'lb-intro': {
-			text: 'Sometimes students who commence the program tell use they find it difficult to achieve a study/work/family/life balance.&&This may include balancing full time study with full or part-time paid work as well as with caring responsibilities.&&Is study/life balance a concern for you? Let\'s work through some examples.',
+			text: 'Sometimes students who commence the program tell us they find it difficult to achieve a study/work/family/life balance.&&This may include balancing full-time study with full- or part-time paid work as well as with caring responsibilities.&&Is study/life balance a concern for you? Let\'s work through some examples.',
 			capture: null,
 			next: 'lb-studyload',
 			answers: []
@@ -227,13 +230,13 @@
 			}]
 		},
 		'pdf': {
-			text: 'That\'s the end of this questionnaire!&&You can <a target="_blank" href="./StudentServicesContactSheet-dummy.pdf">download a PDF document</a> summarising some of the information we\'ve covered.',
+			text: 'That\'s the end of this questionnaire!&&You can <a target="_blank" href="./StudentServicesContactSheet-dummy.pdf">download a PDF document</a> summarising some of the information we\'ve covered.&&If you have any questions or want to discuss things further, you can call the Student Centre on 1800 246 446, or email <a target="_blank" href="mailto:pathways@jcu.edu.au">pathways@jcu.edu.au</a>.',
 			capture: null,
 			next: 'end',
 			answers: []
 		},
 		'end': {
-			text: 'Demonstration complete. Reload this page to start over.',
+			text: 'Demonstration complete. <a href="javascript:window.location.reload();">Reload this page</a> to start over.',
 			capture: null,
 			next: null,
 			answers: []

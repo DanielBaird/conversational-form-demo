@@ -7,14 +7,14 @@ digraph {
 	{ # question nodes
 		node [shape="record",style="filled,rounded"]
 
-		"lb-intro"      [label="{\N}|{.\nSometimes students who commence the program tell use\nthey find it difficult to achieve a study/work/family/life balance.\n&&\nThis may include balancing full time study with full\nor part-time paid work as well as with caring responsibilities.\n&&\nIs study/life balance a concern for you? Let\'s work\nthrough some examples.\n.}"]
+		"lb-intro"      [label="{\N}|{.\nSometimes students who commence the program tell us\nthey find it difficult to achieve a study/work/family/life balance.\n&&\nThis may include balancing full-time study with full-\nor part-time paid work as well as with caring responsibilities.\n&&\nIs study/life balance a concern for you? Let\'s work\nthrough some examples.\n.}"]
 		"lb-studyload"  [label="{\N}|{.\nHow many subjects are you enrolled in this semester?\n.}"]
 		"lb-studyarea"  [label="{\N}|{.\nDo you have a designated study area?\n.}"]
 		"lb-finances"   [label="{\N}|{.\nAre finances a concern for you?\n.}"]
 		"p-placements1" [label="{\N}|{.\nDoes your course have Residential Schools, Placements,\nor Practicums?\n.}"]
 		"p-placements2" [label="{\N}|{.\nDo you know where to find out about them?\n.}"]
 		"p-placements3" [label="{\N}|{.\nHave you considered that you may need to travel for a\nresidential school or to do a placement/practicum?\n.}"]
-		"pdf"           [label="{\N}|{.\nThat's the end of this questionnaire!\n&&\nYou can [download a PDF document]\n(./StudentServicesContactSheet-dummy.pdf) summarising\nsome of the information we've covered.\n.}"]
+		"pdf"           [label="{\N}|{.\nThat's the end of this questionnaire!\n&&\nYou can [download a PDF document]\n(./StudentServicesContactSheet-dummy.pdf) summarising\nsome of the information we've covered.\n&&\nIf you have any questions or want to discuss things\nfurther, you can call the Student Centre on\n1800 246 446, or email\n[pathways@jcu.edu.au](mailto:pathways@jcu.edu.au).\n.}"]
 
 	}
 
@@ -83,19 +83,6 @@ digraph {
 	"p-placements2-no" -> "p-placements2-no-info"
 	"p-placements3-yes" -> "p-placements3-yes-info"
 	"p-placements3-no" -> "p-placements3-no-info"
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
